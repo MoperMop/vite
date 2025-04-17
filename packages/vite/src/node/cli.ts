@@ -15,6 +15,7 @@ import type { InlineConfig } from './config'
 const cli = cac('vite')
 
 // global options
+// make sure to update cleanGlobalCLIOptions() if changed
 interface GlobalCLIOptions {
   '--'?: string[]
   c?: boolean | string
@@ -81,21 +82,26 @@ function cleanGlobalCLIOptions<Options extends GlobalCLIOptions>(
   options: Options,
 ): Omit<Options, keyof GlobalCLIOptions> {
   const ret = { ...options }
-  delete ret['--']
-  delete ret.c
-  delete ret.config
-  delete ret.base
-  delete ret.l
-  delete ret.logLevel
-  delete ret.clearScreen
-  delete ret.configLoader
-  delete ret.d
-  delete ret.debug
-  delete ret.f
-  delete ret.filter
-  delete ret.m
-  delete ret.mode
-  delete ret.w
+  for (const option of [
+    '--',
+    'c',
+    'config',
+    'base',
+    'l',
+    'logLevel',
+    'clearScreen',
+    'configLoader',
+    'd',
+    'debug',
+    'f',
+    'filter',
+    'm',
+    'mode',
+    'force',
+    'w',
+  ] as (keyof GlobalCLIOptions)[]) {
+    delete ret[option]
+  }
 
   // convert the sourcemap option to a boolean if necessary
   if ('sourcemap' in ret) {
